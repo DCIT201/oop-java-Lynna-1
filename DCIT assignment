@@ -1,0 +1,207 @@
+publicabstractclassVehicle {
+    // Private encapsulated fields
+    
+    private String vehicleId;
+    private String model;
+    private double baseRentalRate;
+    private boolean isAvailable;
+
+    // Constructor with validation
+    publiVehicle(String vehicleId, String model, double baseRentalRate) {
+        this.vehicleId = vehicleId;
+        this.model = model;
+        this.baseRentalRate = baseRentalRate;
+        this.isAvailable = true;  // Assume available initially//Validation
+
+        if(vehicleId == null || vehicleId.isEmpty() || model == null || model.isEmpty() || baseRentalRate<=0){
+            thrownewIllegalArgumentException("Invalid Vehicle Data");
+        }
+
+        // Getters and setters
+        public String getVehicleId() {
+            return vehicleId;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public double getBaseRentalRate() {
+            return baseRentalRate;
+        }
+
+        public boolean isAvailable() {
+            return isAvailable;
+        }
+
+        public void setAvailable(boolean available) {
+            isAvailable = available;
+        }
+
+        // Abstract methods for rental calculation and availability check
+        
+        public abstract double calculateRentalCost(int days);
+        public abstract boolean isAvailableForRental();
+
+        //Method for renting a vehicle. This could be overridden in subclasses to add specific rental logic.
+
+        public void rent(Customer customer, int days){
+            if(isAvailableForRental()){
+                doublecost = calculateRentalCost(days);
+                //Create RentalTransaction here
+                System.out.printIn("Vehicle rented successfully to " + customer.getName() + " for " + days + " days. Cost: Ghc" + cost);
+                setAvailable(false);
+            } else {
+                System.out.printIn("Vehicle is not available for rent");
+            }
+        }
+    }
+
+    // Concrete vehicle classes inheriting from Vehicle
+    public class Car extends Vehicle {
+        private int numberofDoors;
+
+        public Car (String vehicleId, String model, double baseRentalRate, int numberofDoors) {
+            super(vehicleId, model, baseRentalRate);
+            this.numberofDoors = numberofDoors;
+        }
+
+        @Override public double calculateRentalCost(int days) {
+            return getBaseRentalRate() * days + (numberofDoors > 4 ? 10 : 5);  // Additional (NumberofDoors > 4 ? 10 : 5) for car
+        }
+
+        @Override public boolean isAvailableForRental() {
+            return isAvailable() && numberofDoors > 2;
+        }
+        
+        public int getNumberofDoors(){
+            return numberofDoors
+        }
+
+    public class Motorcycle extends Vehicle {
+        private int engineCapacity;
+
+        public Motorcycle (String vehicleId, String model, double baseRentalRate, int engineCapacity) {
+            super(vehicleId, model, baseRentalRate);
+            this.engineCapacity = engineCapacity;
+        }
+
+        @Override public double calculateRentalCost(int days) {
+            return getBaseRentalRate() * days + 50;  // Additional 50 for motorcycle
+        }
+
+        @Override public boolean isAvailableForRental() {
+            return isAvailable();
+        }
+
+        //Overloaded rent method to demonstrate method overloading
+        public void rent(Customer customer, int days, boolean insurance){
+            if(insurance){
+                double cost = calculateRentalCost(days)  * 1.1; //10% insurance surcharge
+                System.out.printIn("Vehicle rented successfully to " + customer.getName() + " for " + days + " days with insurance. Cost: Ghc" + cost);
+                setAvailable(false);
+            } else {
+                rent(customer, days);
+            }
+        }
+    }
+
+    public class Truck extends Vehicle {
+        private int carryingCapacity;
+
+        public Truck(String vehicleId, String model, double baseRentalRate, int carryingCapacity) {
+            super(vehicleId, model, baseRentalRate);
+            this.carryingCapacity = carryingCapacity;
+        }
+
+        @Override public double calculateRentalCost(int days) {
+            return getBaseRentalRate() * days;
+        }
+
+        @Override public boolean isAvailableForRental() {
+            return isAvailable();
+        }
+    }
+
+    public interface Rentable {
+        void rent(Customer customer, int days);
+
+        void returnVehicle();
+    }
+
+    //Supporting Classes
+    public class Customer {
+        private String name;
+        private String contactInfo;
+        private List<RentalTransaction>
+        rentalHistory;
+
+        public Customer(String name, String contactInfo){
+            this.name = name;
+            this.contactInfo = contactInfo;
+            this.rentalHistory = new ArrayList<>();
+        }
+        public String getName(){
+            return name;
+        }
+        public List<RentalTransaction> getRentalHistory() {
+            return rentalHistory;
+        }
+        public void addRentalTransaction(RentalTransaction transaction){
+        }
+    }
+
+    public class RentalAgency {
+       private List<Vehicle>
+       vehicleFleet;
+        public RentalAgency() {
+            this.vehicleFleet = new ArrayList<>();
+        }
+        public void addVehicle(Vehicle vehicle) {
+            vehicleFleet.add(vehicle);
+        }
+        public void processRental(Customer customer, Vehicle vehicle, int days)
+    }
+
+    public class RentalTransaction {
+        private Customer customer; 
+        private Vehicle vehicle;
+        private int rentalDays;
+        private double rentalCost;
+        private Date rentalDate;
+        private Date returnDate;
+
+        public RentalTransaction(Customer customer, Vehicle vehicle, int rentalDays, double rentalCost) {
+            this.customer = customer;
+            this.vehicle = vehicle;
+            this.rentalDays = rentalDays;
+            this.rentalCost = rentalCost;
+            this.rentalDate = new Date();
+            this.returnDate = calculateReturnDate(rentalDays);
+        }
+        private Date calculateReturnDate(int rentalDate){
+            Calender calender = Calender.getInsurance();
+            calender.setTime(rentalDate);
+            calender.add(Calender.DAY_OF_THE_YEAR, rentalDays);
+        }
+        public Customer getCustomer() {
+            return customer;
+        }
+        public Vehicle getVehicle(){
+            return vehicle;
+        }
+        public int getRentalDays(){
+            return rentalDays;
+        }
+        public double getRentalCost(){
+            return rentalCost;
+        }
+        public Date getRentalDate(){
+            return rentalDate;
+        }
+
+        @Override public String toString() {
+            return "RentalTransaction{" + "customer= " + customer.getName() + ", vehicle= " + vehicle.getModel() + ", rentalDays= " + rentalDays + ", rentalCost= " + rentalCost + ", rentalDate= " + rentalDate + ", returnDate= " + returnDate + '}'; 
+        }
+    }
+} 
